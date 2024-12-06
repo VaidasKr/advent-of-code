@@ -49,9 +49,8 @@ fun readInput(year: Int, day: Int): List<String> {
         if (connection.responseCode in 200..299) {
             connection.inputStream.transferTo(file.outputStream())
         } else {
-            throw RuntimeException(
-                "failed to download -> ${connection.errorStream.readAllBytes().toString(Charsets.UTF_8)}"
-            )
+            val errorString = connection.errorStream.readAllBytes().toString(Charsets.UTF_8)
+            throw RuntimeException("failed to download -> $errorString")
         }
     }
     return file.readLines()
