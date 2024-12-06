@@ -1,6 +1,7 @@
 import java.math.BigInteger
 import java.net.HttpURLConnection
 import java.net.URL
+import java.nio.file.Path
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.exists
@@ -25,17 +26,21 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  */
 fun Any?.println() = println(this)
 
+fun readTestInput(year: Int, day: Int, postFix: String = ""): List<String> =
+    inputFile(year, day, "-test$postFix").readLines()
+
+fun inputFile(year: Int, day: Int, postFix: String = ""): Path = Path(buildString {
+    append("src/input/Day")
+    append(year)
+    append('-')
+    if (day < 10) append(0)
+    append(day)
+    append(postFix)
+    append(".txt")
+})
+
 fun readInput(year: Int, day: Int): List<String> {
-    val file = Path(
-        buildString {
-            append("src/input/Day")
-            append(year)
-            append('-')
-            if (day < 10) append(0)
-            append(day)
-            append(".txt")
-        }
-    )
+    val file = inputFile(year, day)
     if (!file.exists()) {
         val session = Path("src/Cookie.txt").readText().trim()
         val connection = URL("https://adventofcode.com/$year/day/$day/input").openConnection() as HttpURLConnection
