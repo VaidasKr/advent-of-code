@@ -56,7 +56,8 @@ fun main() {
             val (result, values) = line.split(':')
             val numberStrings = values.trim().split(' ')
             val expected = result.toLong()
-            if (hasSum2(expected, LongArray(numberStrings.size) { numberStrings[it].toLong() }, 0, 0)) {
+            val numbers = LongArray(numberStrings.size) { numberStrings[it].toLong() }
+            if (hasSum2(expected, numbers, 1, numbers.first())) {
                 sum += expected
             }
         }
