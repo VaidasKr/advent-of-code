@@ -11,11 +11,7 @@ fun main() {
                 if (rock == "0") {
                     1L
                 } else {
-                    if (rock.length % 2 == 0) {
-                        2L
-                    } else {
-                        1L
-                    }
+                    if (rock.length % 2 == 0) 2L else 1L
                 }
             } else {
                 if (rock == "0") {
