@@ -27,6 +27,8 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  */
 fun Any?.println() = println(this)
 
+fun Any?.printCompare(expected: Any?) = println("($this) expected ($expected)")
+
 fun readTestInput(year: Int, day: Int, postFix: String = ""): List<String> {
     val inputFile = inputFile(year, day, "-test$postFix")
     return if (inputFile.exists()) {

@@ -17,17 +17,18 @@ fun main() {
         x: Int,
         y: Int,
         char: Char,
-        visited: MutableSet<Pair<Int, Int>>
+        visited: MutableSet<Int>
     ): Long {
         var points = listOf(x, y)
         var perimeter = 0L
-        val area = hashSetOf(x to y)
+        val width = inputs[0].length
+        val area = hashSetOf(x + y * width)
         while (points.isNotEmpty()) {
             points = buildList {
                 for (i in points.indices step 2) {
                     onSides(points[i], points[i + 1]) { nextX, nextY, _ ->
                         if (inputs.getAt(nextX, nextY) == char) {
-                            if (area.add(nextX to nextY)) {
+                            if (area.add(nextX + nextY * width)) {
                                 add(nextX)
                                 add(nextY)
                             }
@@ -45,11 +46,12 @@ fun main() {
 
     fun part1(inputs: List<String>): Long {
         var score = 0L
-        val visited = hashSetOf<Pair<Int, Int>>()
+        val visited = hashSetOf<Int>()
+        val width = inputs[0].length
         for (y in inputs.indices) {
             val line = inputs[y]
             for (x in line.indices) {
-                if (visited.contains(x to y)) {
+                if (visited.contains(x + y * width)) {
                     continue
                 }
                 val char = line[x]
@@ -99,17 +101,19 @@ fun main() {
         x: Int,
         y: Int,
         char: Char,
-        visited: MutableSet<Pair<Int, Int>>
+        visited: MutableSet<Int>
     ): Int {
         var points = listOf(x, y)
         val perimeter = hashSetOf<Triple<Int, Int, Int>>()
-        val area = hashSetOf(x to y)
+        val width = inputs[0].length
+        val startSize = visited.size
+        visited.add(x + y * width)
         while (points.isNotEmpty()) {
             points = buildList {
                 for (i in points.indices step 2) {
                     onSides(points[i], points[i + 1]) { nextX, nextY, side ->
                         if (inputs.getAt(nextX, nextY) == char) {
-                            if (area.add(nextX to nextY)) {
+                            if (visited.add(nextX + nextY * width)) {
                                 add(nextX)
                                 add(nextY)
                             }
@@ -120,17 +124,17 @@ fun main() {
                 }
             }
         }
-        visited.addAll(area)
-        return calcSides(perimeter) * area.size
+        return calcSides(perimeter) * (visited.size - startSize)
     }
 
     fun part2(inputs: List<String>): Long {
         var score = 0L
-        val visited = hashSetOf<Pair<Int, Int>>()
+        val visited = hashSetOf<Int>()
+        val width = inputs[0].length
         for (y in inputs.indices) {
             val line = inputs[y]
             for (x in line.indices) {
-                if (visited.contains(x to y)) {
+                if (visited.contains(x + y * width)) {
                     continue
                 }
                 val char = line[x]
@@ -148,12 +152,9 @@ fun main() {
     part1(testInput0).println()
     part1(testInput1).println()
     part1(testInput2).println()
-    println()
     part1(actualInput).println()
-    println()
     part2(testInput0).println()
     part2(testInput1).println()
-    println()
     part2(actualInput).println()
 }
 
