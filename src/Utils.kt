@@ -4,6 +4,7 @@ import java.net.URL
 import java.nio.file.Path
 import java.security.MessageDigest
 import kotlin.io.path.Path
+import kotlin.io.path.createFile
 import kotlin.io.path.exists
 import kotlin.io.path.outputStream
 import kotlin.io.path.readLines
@@ -26,8 +27,15 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  */
 fun Any?.println() = println(this)
 
-fun readTestInput(year: Int, day: Int, postFix: String = ""): List<String> =
-    inputFile(year, day, "-test$postFix").readLines()
+fun readTestInput(year: Int, day: Int, postFix: String = ""): List<String> {
+    val inputFile = inputFile(year, day, "-test$postFix")
+    return if (inputFile.exists()) {
+        inputFile.readLines()
+    } else {
+        inputFile.createFile()
+        throw NoSuchElementException("$inputFile (empty file created)")
+    }
+}
 
 fun inputFile(year: Int, day: Int, postFix: String = ""): Path = Path(buildString {
     append("src/input/Day")
