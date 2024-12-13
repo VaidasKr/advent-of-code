@@ -4,7 +4,7 @@ import println
 import readInput
 import readTestInput
 
-fun template() {
+fun main() {
     fun part1(inputs: List<String>): Long {
         return 0L
     }
