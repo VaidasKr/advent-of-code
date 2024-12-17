@@ -176,7 +176,7 @@ fun main() {
         var size = 1
         var ongoing = mutableListOf(0L)
         while (size <= program.size) {
-            val match = program.takeLast(size).joinToString(",")
+            val match = program.takeLast(size++).joinToString(",")
             val newOngoing = mutableListOf<Long>()
             ongoing.forEach { num ->
                 val range = num * 8
@@ -188,7 +188,6 @@ fun main() {
                 }
             }
             ongoing = newOngoing
-            size++
         }
         return ongoing.min()
     }
