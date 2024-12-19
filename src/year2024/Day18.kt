@@ -41,11 +41,42 @@ fun main() {
         return 0
     }
 
-    fun part2(inputs: List<String>, size: Int): String {
-        for (i in 1 until inputs.size) {
-            if (part1(inputs, size, i + 1) == 0) {
-                return inputs[i]
+    fun getBestPath(corrupted: Set<Int>, range: IntRange, width: Int, end: Int): Set<Int>? {
+        var ongoing = setOf(listOf(0))
+        val visited = hashSetOf(0)
+        while (ongoing.isNotEmpty()) {
+            val newOngoing = hashSetOf<List<Int>>()
+            ongoing.forEach { path ->
+                val point = path.last()
+                neighbours(point % width, point / width) { x, y ->
+                    if (x == end && y == end) return path.toSet()
+                    val newPoint = x + y * width
+                    if (x in range && y in range && newPoint !in corrupted && visited.add(newPoint)) {
+                        newOngoing.add(path + newPoint)
+                    }
+                }
             }
+            ongoing = newOngoing
+        }
+        return null
+    }
+
+    fun part2(inputs: List<String>, size: Int): String {
+        val width = size + 1
+        val allowedRange = 0..size
+        val corruptedPoints = hashSetOf<Int>()
+        var bestPath = emptySet<Int>()
+        for (lineI in inputs.indices) {
+            val line = inputs[lineI]
+            val (x, y) = line.split(',')
+            val newPoint = x.toInt() + y.toInt() * width
+            corruptedPoints.add(newPoint)
+
+            if (bestPath.isNotEmpty() && newPoint !in bestPath) {
+                continue
+            }
+            val newBestPath = getBestPath(corruptedPoints, allowedRange, width, size) ?: return line
+            bestPath = newBestPath
         }
         return "nope"
     }
