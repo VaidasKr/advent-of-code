@@ -55,7 +55,6 @@ fun main() {
 
     part1(testInput, 6, 12).println()
     part1(actualInput, 70, 1024).println()
-//
     part2(testInput, 6).println()
     part2(actualInput, 70).println()
 }
