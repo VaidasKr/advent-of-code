@@ -5,11 +5,6 @@ import readInput
 import readTestInput
 import java.util.PriorityQueue
 
-inline fun getSides(dirX: Int, dirY: Int, onSide: (Int, Int) -> Unit) {
-    onSide(dirY, dirX)
-    onSide(-dirY, -dirX)
-}
-
 fun main() {
     fun getLowestScore(inputs: List<String>, startX: Int, startY: Int): Int {
         val queue = PriorityQueue<List<Int>>(compareBy { it[4] })
