@@ -3,7 +3,6 @@ package year2024
 import println
 import readInput
 import readTestInput
-import kotlin.time.measureTime
 
 private inline fun getSides20(onSide: (Int, Int) -> Unit) {
     onSide(+1, 0)
@@ -159,7 +158,5 @@ fun main() {
     part1(actualInput).println()
 
     part2(testInput, 50, 20).println()
-    measureTime {
-        part2(actualInput, 100, 20).println()
-    }.println()
+    part2(actualInput, 100, 20).println()
 }
