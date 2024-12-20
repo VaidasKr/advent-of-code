@@ -72,7 +72,7 @@ fun main() {
         return shortestPathFromTo(inputs, start, end)
     }
 
-    fun part1(inputs: List<String>): Int {
+    fun part1(inputs: List<String>, threshold: Int): Int {
         val width = inputs[0].length
         val fastest = getShortestPath(inputs, width)
 
@@ -88,14 +88,12 @@ fun main() {
             val x = position % width
             val y = position / width
             getSides20 { dirX, dirY ->
-                val endX = x + dirX + dirX
-                val endY = y + dirY + dirY
-                if (inputs.getAt(x + dirX, y + dirY) == '#' &&
-                    inputs.getAt(endX, endY).let { it != '-' && it != '#' }
-                ) {
-                    val saved = map[endX + width * endY]!! - i - 2
-                    if (saved >= 100) {
-                        sum++
+                if (inputs.getAt(x + dirX, y + dirY) == '#') {
+                    val endX = x + dirX + dirX
+                    val endY = y + dirY + dirY
+                    val endChar = inputs.getAt(endX, endY)
+                    if (endChar != '-' && endChar != '#') {
+                        if (map[endX + width * endY]!! - i - 2 >= threshold) sum++
                     }
                 }
             }
@@ -154,8 +152,8 @@ fun main() {
     val testInput = readTestInput(2024, 20)
     val actualInput = readInput(2024, 20)
 
-    part1(testInput).println()
-    part1(actualInput).println()
+    part1(testInput, 0).println()
+    part1(actualInput, 100).println()
 
     part2(testInput, 50, 20).println()
     part2(actualInput, 100, 20).println()
