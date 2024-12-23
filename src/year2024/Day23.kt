@@ -41,61 +41,30 @@ fun main() {
 
         var biggestGroup = setOf("")
 
+        val visitedStarts = hashSetOf<String>()
+
         connections.forEach { (startNode, startConnections) ->
             var ongoing: Set<Pair<Set<String>, Set<String>>> =
-                setOf(setOf(startNode) to startConnections)
+                setOf(setOf(startNode) to startConnections.filterTo(hashSetOf()) { it !in visitedStarts })
             while (ongoing.isNotEmpty()) {
+                val visited = hashSetOf<String>()
                 val newOngoing = hashSetOf<Pair<Set<String>, Set<String>>>()
-                for (nodesAndSharedConnections in ongoing) {
-                    val (nodes, sharedConnections) = nodesAndSharedConnections
+                for ((nodes, sharedConnections) in ongoing) {
                     sharedConnections.forEach { sharedNode ->
-                        val newSharedConnections = connections[sharedNode]!!.filterTo(hashSetOf()) {
-                            it in sharedConnections
-                        }
-                        val connectedNodes = nodes + sharedNode
-                        if (newSharedConnections.isNotEmpty()) {
-                            newOngoing.add(connectedNodes to newSharedConnections)
-                        } else if (connectedNodes.size > biggestGroup.size) {
-                            biggestGroup = connectedNodes
+                        if (visited.add(sharedNode)) {
+                            val newSharedConnections = connections[sharedNode]!!.intersect(sharedConnections)
+                            val connectedNodes = nodes + sharedNode
+                            if (newSharedConnections.isNotEmpty()) {
+                                newOngoing.add(connectedNodes to newSharedConnections)
+                            } else if (connectedNodes.size > biggestGroup.size) {
+                                biggestGroup = connectedNodes
+                            }
                         }
                     }
                 }
                 ongoing = newOngoing
             }
-        }
-
-        return biggestGroup.sorted().joinToString(",")
-    }
-
-    fun part2plus(inputs: List<String>): String {
-        val connections = getConnections(inputs)
-
-        var biggestGroup = setOf("")
-
-        val visited = hashSetOf<String>()
-
-        connections.forEach { (startNode, startConnections) ->
-            var ongoing: Set<Pair<Set<String>, Set<String>>> =
-                setOf(setOf(startNode) to startConnections.filterTo(hashSetOf()) { it !in visited })
-            while (ongoing.isNotEmpty()) {
-                val newOngoing = hashSetOf<Pair<Set<String>, Set<String>>>()
-                for (nodesAndSharedConnections in ongoing) {
-                    val (nodes, sharedConnections) = nodesAndSharedConnections
-                    sharedConnections.forEach { sharedNode ->
-                        val newSharedConnections = connections[sharedNode]!!.filterTo(hashSetOf()) {
-                            it in sharedConnections
-                        }
-                        val connectedNodes = nodes + sharedNode
-                        if (newSharedConnections.isNotEmpty()) {
-                            newOngoing.add(connectedNodes to newSharedConnections)
-                        } else if (connectedNodes.size > biggestGroup.size) {
-                            biggestGroup = connectedNodes
-                        }
-                    }
-                }
-                ongoing = newOngoing
-            }
-            visited.add(startNode)
+            visitedStarts.add(startNode)
         }
 
         return biggestGroup.sorted().joinToString(",")
@@ -110,10 +79,5 @@ fun main() {
     measureTime {
         part2(testInput).println()
         part2(actualInput).println()
-    }.println()
-
-    measureTime {
-        part2plus(testInput).println()
-        part2plus(actualInput).println()
     }.println()
 }
