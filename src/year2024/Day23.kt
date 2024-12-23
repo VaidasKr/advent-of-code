@@ -3,7 +3,6 @@ package year2024
 import println
 import readInput
 import readTestInput
-import kotlin.time.measureTime
 
 fun main() {
     fun getConnections(inputs: List<String>): HashMap<String, HashSet<String>> {
@@ -44,18 +43,17 @@ fun main() {
         val visitedStarts = hashSetOf<String>()
 
         connections.forEach { (startNode, startConnections) ->
-            var ongoing: Set<Pair<Set<String>, Set<String>>> =
-                setOf(setOf(startNode) to startConnections.filterTo(hashSetOf()) { it !in visitedStarts })
+            var ongoing = mapOf(setOf(startNode) to startConnections.subtract(visitedStarts))
             while (ongoing.isNotEmpty()) {
                 val visited = hashSetOf<String>()
-                val newOngoing = hashSetOf<Pair<Set<String>, Set<String>>>()
+                val newOngoing = hashMapOf<Set<String>, Set<String>>()
                 for ((nodes, sharedConnections) in ongoing) {
                     sharedConnections.forEach { sharedNode ->
                         if (visited.add(sharedNode)) {
                             val newSharedConnections = connections[sharedNode]!!.intersect(sharedConnections)
                             val connectedNodes = nodes + sharedNode
                             if (newSharedConnections.isNotEmpty()) {
-                                newOngoing.add(connectedNodes to newSharedConnections)
+                                newOngoing[connectedNodes] = newSharedConnections
                             } else if (connectedNodes.size > biggestGroup.size) {
                                 biggestGroup = connectedNodes
                             }
@@ -76,8 +74,6 @@ fun main() {
     part1(testInput).println()
     part1(actualInput).println()
 
-    measureTime {
-        part2(testInput).println()
-        part2(actualInput).println()
-    }.println()
+    part2(testInput).println()
+    part2(actualInput).println()
 }
