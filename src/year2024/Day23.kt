@@ -67,6 +67,40 @@ fun main() {
         return biggestGroup.sorted().joinToString(",")
     }
 
+    fun part2plus(inputs: List<String>): String {
+        val connections = getConnections(inputs)
+
+        var biggestGroup = setOf("")
+
+        val visited = hashSetOf<String>()
+
+        connections.forEach { (startNode, startConnections) ->
+            var ongoing: Set<Pair<Set<String>, Set<String>>> =
+                setOf(setOf(startNode) to startConnections.filterTo(hashSetOf()) { it !in visited })
+            while (ongoing.isNotEmpty()) {
+                val newOngoing = hashSetOf<Pair<Set<String>, Set<String>>>()
+                for (nodesAndSharedConnections in ongoing) {
+                    val (nodes, sharedConnections) = nodesAndSharedConnections
+                    sharedConnections.forEach { sharedNode ->
+                        val newSharedConnections = connections[sharedNode]!!.filterTo(hashSetOf()) {
+                            it in sharedConnections
+                        }
+                        val connectedNodes = nodes + sharedNode
+                        if (newSharedConnections.isNotEmpty()) {
+                            newOngoing.add(connectedNodes to newSharedConnections)
+                        } else if (connectedNodes.size > biggestGroup.size) {
+                            biggestGroup = connectedNodes
+                        }
+                    }
+                }
+                ongoing = newOngoing
+            }
+            visited.add(startNode)
+        }
+
+        return biggestGroup.sorted().joinToString(",")
+    }
+
     val testInput = readTestInput(2024, 23)
     val actualInput = readInput(2024, 23)
 
@@ -76,5 +110,10 @@ fun main() {
     measureTime {
         part2(testInput).println()
         part2(actualInput).println()
+    }.println()
+
+    measureTime {
+        part2plus(testInput).println()
+        part2plus(actualInput).println()
     }.println()
 }
