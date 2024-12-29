@@ -191,23 +191,16 @@ fun main() {
             index++
         }
 
-        val xSum = values.keys.asSequence()
-            .filter { it.startsWith('x') }
-            .sortedByDescending { it }
-            .fold(0L) { xSum, next ->
-                xSum * 2 + values[next]!!
-            }
+        var expectedSum = 0L
+        xyMultiplier = 1L
+        for (i in xyRange) {
+            val num = if (i >= 10) i.toString() else "0$i"
+            expectedSum += (values["x$num"]!! + values["y$num"]!!) * xyMultiplier
+            xyMultiplier *= 2
+        }
 
-        val ySum = values.keys.asSequence()
-            .filter { it.startsWith('y') }
-            .sortedByDescending { it }
-            .fold(0L) { ySum, next ->
-                ySum * 2 + values[next]!!
-            }
-
-        val zExpected = xSum + ySum
-        if (zExpected != sum) {
-            println("expected ${zExpected.toString(2)}")
+        if (expectedSum != sum) {
+            println("expected ${expectedSum.toString(2)}")
             println("actual   ${sum.toString(2)}")
         }
 
@@ -225,20 +218,3 @@ fun main() {
 //    part2(testInput1).println()
     part2(actualInput).println()
 }
-
-// a,b,c,d,e,f
-// ab, cd, ef
-// ab, ce, df
-// ab, cf, de
-// ac, bd, ef
-// ac, be, df
-// ac, bf, de
-// ad, bc, ef
-// ad, be, cf
-// ad, bf, ce
-// ae, bc, df
-// ae, bd, cf
-// ae, bf, cd
-// af, bc, de
-// af, bd, ce
-// af, be, cd
