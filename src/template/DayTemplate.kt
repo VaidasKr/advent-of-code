@@ -13,8 +13,8 @@ fun main() {
         return 0L
     }
 
-    val testInput = readTestInput(2024, 0)
-    val actualInput = readInput(2024, 0)
+    val testInput = readTestInput(2025, 0)
+    val actualInput = readInput(2025, 0)
 
     part1(testInput).println()
     part1(actualInput).println()
